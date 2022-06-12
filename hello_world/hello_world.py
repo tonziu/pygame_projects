@@ -4,6 +4,9 @@
 # will be calculated in respect to the aspect
 # ratio. By default the window has a white 
 # background color. 
+# 
+# Written by: Tony De Corso
+#
 
 import pygame
 
