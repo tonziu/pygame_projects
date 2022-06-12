@@ -13,24 +13,22 @@ ASPECT_RATIO = 16/9
 WIN_H = 720
 WIN_W = int(ASPECT_RATIO * WIN_H)
 
-RADIUS = 30
+RADIUS = 20
 
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
+BLACK = (0, 0, 0)
 
-FPS = 30
+FPS = 60
 
 class Circle:
     def __init__(self, canvas, radius = RADIUS, color = RED):
         self.canvas = canvas
-        self.surface = pygame.Surface((radius, radius)).convert()
         self.radius = radius
         self.color = color
-        self.surface.fill(self.color)
         self.center = [int(self.canvas.get_size()[0]/2), 
                        int(self.canvas.get_size()[1]/2)]
-
 
     def render(self):
         pygame.draw.circle(self.canvas, self.color, self.center, self.radius)
@@ -38,6 +36,8 @@ class Circle:
 class App:
     def __init__(self, width = WIN_W, height = WIN_H):
         self.window = pygame.display.set_mode((width, height))
+        self.width = width
+        self.height = height
         pygame.display.set_caption("Can't touch me: demo")
         self.background = pygame.Surface((width, height)).convert()
         self.background.fill(WHITE)
@@ -54,10 +54,27 @@ class App:
 
     def _update(self):
         distance = math.dist(pygame.mouse.get_pos(), self.circle.center)
-        if (distance > self.circle.radius*6):
-            self.circle.color = GREEN
-        else:
-            self.circle.color = RED
+
+        diff_x = pygame.mouse.get_pos()[0] - self.circle.center[0]
+        diff_y = pygame.mouse.get_pos()[1] - self.circle.center[1]
+
+        angle = math.atan2(diff_y, diff_x)
+        
+        if (distance < self.circle.radius*10):
+            self.circle.center[0] -= math.cos(angle)*(1000/distance)
+            self.circle.center[1] -= math.sin(angle)*(1000/distance)
+
+        if (self.circle.center[0] + self.circle.radius > self.width):
+            self.circle.center[0] = self.circle.radius * 7
+
+        if (self.circle.center[1] + self.circle.radius > self.height):
+            self.circle.center[1] = self.circle.radius * 7
+        
+        if (self.circle.center[0] < 0):
+            self.circle.center[0] = self.width - self.circle.radius*7
+
+        if (self.circle.center[1] < 0):
+            self.circle.center[1] = self.height - self.circle.radius*7
 
     def _render(self):
         self.window.blit(self.background, (0, 0))
