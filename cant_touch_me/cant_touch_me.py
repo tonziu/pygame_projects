@@ -19,7 +19,7 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLACK = (0, 0, 0)
 
-FPS = 60
+FPS = 120
 
 class Circle:
     def __init__(self, canvas, radius = RADIUS, color = RED):
